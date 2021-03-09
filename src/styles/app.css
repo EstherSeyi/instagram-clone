@@ -30307,6 +30307,10 @@ img {
   object-fit: cover;
 }
 
+.disabled-btn {
+  opacity: 0.3;
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;
