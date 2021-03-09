@@ -5,15 +5,19 @@
 /* General styles */
 
 body {
-	background: #fbfbfb;
-	color: #000;
-	margin: 0;
-	font-family: 'Quicksand', sans-serif;
-	font-size: 1rem;
-	line-height: 1.6;
-	letter-spacing: 0.2px;
+  background: #fafafa;
+  color: #000;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
 }
 
 img {
-	object-fit: cover;
+  object-fit: cover;
+}
+
+.disabled-btn {
+  opacity: 0.3;
 }
