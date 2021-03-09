@@ -17,7 +17,3 @@ body {
 img {
   object-fit: cover;
 }
-
-.disabled-btn {
-  opacity: 0.3;
-}

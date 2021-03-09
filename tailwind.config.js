@@ -10,6 +10,7 @@ module.exports = {
     },
 
     fontSize: {
+      10: "0.625rem",
       14: "0.875rem",
       20: "1.125rem",
       24: "1.5rem",
@@ -34,6 +35,7 @@ module.exports = {
         quicksand: ["Quicksand", "sans-serif"],
       },
       colors: {
+        red: "red",
         azureRadiance: "#0095f6",
         alabaster: "#fafafa",
         mecury: "#e2e2e2",
