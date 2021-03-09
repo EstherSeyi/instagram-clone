@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { Link, useHistory } from "react-router-dom";
+
+import { FirebaseContext } from "../context/firebase";
+import { DASHBOARD, SIGN_UP } from "../constants/routes";
+
+import Input from "../components/input";
+import Button from "../components/button";
 
 import heroImage from "../images/iphone-with-profile.jpg";
 import logo from "../images/logo.png";
 
 export default function Login() {
+  const history = useHistory();
+  const { firebase } = useContext(FirebaseContext);
   const [state, setState] = useState({
     email: "",
     password: "",
-    error: {},
+    error: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Login - Instagram";
@@ -21,16 +30,36 @@ export default function Login() {
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
+
     setState((prevState) => ({
       ...prevState,
+      error: "",
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(state.email, state.password);
+      history.push(DASHBOARD);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setState((prevState) => ({
+        ...prevState,
+        error: error.message,
+      }));
+    }
   };
 
   const isValid = state.email !== "" && state.password !== "";
 
   return (
-    <div className="container flex justify-center items-center mx-auto h-screen ">
+    <section className="container flex justify-center items-center mx-auto h-screen ">
       <div className="hidden md:block h-618 mr-8">
         <img
           src={heroImage}
@@ -43,46 +72,46 @@ export default function Login() {
           <h1 className="block mx-auto w-40 mb-3 mt-5">
             <img src={logo} alt="Instagram" />
           </h1>
-          <form method="POST" className="w-10/12 mx-auto mt-6 text-14">
-            <input
+
+          <form
+            method="POST"
+            className="w-10/12 mx-auto mt-6 text-14"
+            onSubmit={handleSubmit}
+          >
+            <Input
               placeholder="Email address"
-              aria-label="Enter your email address"
+              ariaLabel="Enter your email address"
               name="email"
-              type="email"
+              type="text"
               onChange={handleChange}
               value={state.email}
-              className="w-full bg-alabaster border border-mecury rounded-sm pt-2 pr-0 pb-1.5 pl-2 placeholder-quickSilver mb-2 focus:outline-none focus:border-quickSilver"
             />
-            <input
-              aria-label="Enter your password"
+            <Input
+              ariaLabel="Enter your password"
               placeholder="Password"
               name="password"
               type="password"
               value={state.password}
               onChange={handleChange}
-              className="w-full bg-alabaster border border-mecury rounded-sm pt-2 pr-0 pb-1.5 pl-2 placeholder-quickSilver mb-2 focus:outline-none focus:border-quickSilver"
             />
-            <button
-              type="submit"
-              disabled={!isValid}
-              className={`bg-azureRadiance w-full text-white rounded py-1   mt-6 ${
-                !isValid ? "opacity-30 cursor-not-allowed" : ""
-              }`}
-            >
+            <Button isValid={isValid} loading={loading}>
               Log In
-            </button>
+            </Button>
           </form>
+          {state.error && (
+            <p className="text-10 my-2 text-red text-center">{state.error}</p>
+          )}
         </div>
 
         <div className="border border-mecury2 py-1 text-center">
           <p className="m-3.5 text-14">
             Don't have an account?{" "}
-            <Link to="/signup" className="font-bold text-azureRadiance">
+            <Link to={SIGN_UP} className="font-bold text-azureRadiance">
               Sign up
             </Link>
           </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
