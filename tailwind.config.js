@@ -36,11 +36,13 @@ module.exports = {
       },
       colors: {
         red: "red",
+        green: "green",
         azureRadiance: "#0095f6",
         alabaster: "#fafafa",
         mecury: "#e2e2e2",
         mecury2: "#e7e7e7",
         quickSilver: "#9b9b9b",
+        creamish: "#fae7e6",
       },
     },
   },
