@@ -1,8 +1,8 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import { FirebaseContext } from "../context/firebase";
-import { DASHBOARD, SIGN_UP } from "../constants/routes";
+import { SIGN_UP } from "../constants/routes";
+import { useAuth } from "../context/user";
 
 import Input from "../components/input";
 import Button from "../components/button";
@@ -12,13 +12,12 @@ import logo from "../images/logo.png";
 
 export default function Login() {
   const history = useHistory();
-  const { firebase } = useContext(FirebaseContext);
+  const { auth, login, clearError } = useAuth();
   const [state, setState] = useState({
     email: "",
     password: "",
     error: "",
   });
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Login - Instagram";
@@ -30,7 +29,7 @@ export default function Login() {
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
-
+    clearError();
     setState((prevState) => ({
       ...prevState,
       error: "",
@@ -40,20 +39,13 @@ export default function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      setLoading(true);
-      await firebase
-        .auth()
-        .signInWithEmailAndPassword(state.email, state.password);
-      history.push(DASHBOARD);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      setState((prevState) => ({
-        ...prevState,
-        error: error.message,
-      }));
-    }
+    await login(
+      {
+        email: state.email,
+        password: state.password,
+      },
+      history
+    );
   };
 
   const isValid = state.email !== "" && state.password !== "";
@@ -94,13 +86,19 @@ export default function Login() {
               value={state.password}
               onChange={handleChange}
             />
-            <Button isValid={isValid} loading={loading}>
+            <Button isValid={isValid} loading={auth.isLoading}>
               Log In
             </Button>
           </form>
-          {state.error && (
-            <p className="text-10 my-2 text-red text-center">{state.error}</p>
-          )}
+          {state.error ? (
+            <p className="text-10 my-2 text-red text-center px-4">
+              {state.error}
+            </p>
+          ) : auth.error ? (
+            <p className="text-10 my-2 text-red text-center px-4">
+              {auth.error}
+            </p>
+          ) : null}
         </div>
 
         <div className="border border-mecury2 py-1 text-center">

@@ -1,28 +1,24 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import Button from "../components/button";
 import Input from "../components/input";
 
-import { FirebaseContext } from "../context/firebase";
-import { LOGIN, DASHBOARD } from "../constants/routes";
-import { doesUsernameExist } from "../services/firebase";
+import { LOGIN } from "../constants/routes";
+import { useAuth } from "../context/user";
 
 import logo from "../images/logo.png";
 
 export default function SignUp() {
   const history = useHistory();
-  const { firebase } = useContext(FirebaseContext);
+  const { register, auth, clearError } = useAuth();
   const [state, setState] = useState({
     username: "",
     fullname: "",
     email: "",
     password: "",
     error: "",
-    success: "",
   });
-
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Signup - Instagram";
@@ -34,7 +30,7 @@ export default function SignUp() {
 
   const handleChange = ({ target }) => {
     const { value, name } = target;
-
+    clearError();
     setState((prevState) => ({
       ...prevState,
       error: "",
@@ -63,53 +59,7 @@ export default function SignUp() {
 
   const handleSignup = async (event) => {
     event.preventDefault();
-    try {
-      setLoading(true);
-      const usernameExists = await doesUsernameExist(state.username);
-
-      if (usernameExists.length) {
-        setLoading(false);
-        setState((prevState) => ({
-          ...prevState,
-          error: "Username already exists!",
-          success: "",
-        }));
-        return;
-      }
-
-      const result = await firebase
-        .auth()
-        .createUserWithEmailAndPassword(state.email, state.password);
-      await result.user.updateProfile({
-        displayName: state.username,
-      });
-
-      firebase.firestore().collection("users").add({
-        userId: result.user.uid,
-        displayName: state.username.toLocaleLowerCase(),
-        username: state.username,
-        fullName: state.fullname,
-        emailAddress: state.email.toLocaleLowerCase(),
-        following: [],
-        followers: [],
-        dateCreated: Date.now(),
-      });
-
-      setLoading(false);
-      setState((prevState) => ({
-        ...prevState,
-        error: "",
-        success: "Success. Account Created!",
-      }));
-      history.push(DASHBOARD);
-    } catch (error) {
-      setLoading(false);
-      setState((prevState) => ({
-        ...prevState,
-        error: error.message,
-        success: "",
-      }));
-    }
+    await register(state, history);
   };
 
   return (
@@ -157,19 +107,20 @@ export default function SignUp() {
               value={state.password}
             />
 
-            <Button isValid={isValid} loading={loading}>
+            <Button isValid={isValid} loading={auth.isLoading}>
               Sign Up
             </Button>
           </form>
 
-          {state.error && (
-            <p className="text-10 my-2 text-red text-center">{state.error}</p>
-          )}
-          {state.success && (
-            <p className="text-10 my-2 text-green text-center">
-              {state.success}
+          {state.error ? (
+            <p className="text-10 my-2 text-red text-center px-4">
+              {state.error}
             </p>
-          )}
+          ) : auth.error ? (
+            <p className="text-10 my-2 text-red text-center px-4">
+              {auth.error}
+            </p>
+          ) : null}
         </div>
         <div className="sm:border border-mecury2 sm:bg-white py-1 text-center max-w-350 mx-auto">
           <p className="m-3.5 text-14">
