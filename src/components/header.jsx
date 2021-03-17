@@ -1,25 +1,20 @@
 import { Link, useHistory } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useState } from "react";
 
-import { FirebaseContext } from "../context/firebase";
 import { DASHBOARD, LOGIN, SIGN_UP, PROFILE } from "../constants/routes";
+import { useAuth } from "../context/user";
 
 import logo from "../images/logo.png";
 import avatar from "../images/avatars/raphael.jpg";
 
-export default function Header() {
-  const { firebase } = useContext(FirebaseContext);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+import Profile from "./icons/profile";
+import Bookmark from "./icons/bookmark";
+import Setting from "./icons/setting";
+import Chat from "./icons/chat";
+import Home from "./icons/home";
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        setIsLoggedIn(false);
-      } else {
-        setIsLoggedIn(true);
-      }
-    });
-  }, [firebase]);
+export default function Header() {
+  const { auth } = useAuth();
 
   return (
     <header className="py-3 border-b border-mecury2 bg-white mb-8">
@@ -29,7 +24,7 @@ export default function Header() {
             <img src={logo} alt="Instagram" className="h-30" />
           </h1>
         </Link>
-        {isLoggedIn ? (
+        {auth.isLoggedIn ? (
           <Avatar />
         ) : (
           <div>
@@ -54,52 +49,58 @@ export default function Header() {
 
 const Avatar = () => {
   const history = useHistory();
-  const { firebase } = useContext(FirebaseContext);
+  const { logout, auth } = useAuth();
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     setClicked((prevState) => !prevState);
   };
 
   const handleLogout = async () => {
-    await firebase.auth().signOut();
-    history.push(LOGIN);
+    await logout(history);
   };
 
   return (
     <>
-      <div className="relative">
-        <img
-          onClick={handleClick}
-          src={avatar}
-          alt="User Avatar"
-          className={`block rounded-full h-30 cursor-pointer ${
-            clicked ? "border border-dark" : ""
-          }  p-0.5`}
-        />
-        <div
-          className={`absolute bg-white w-48 -right-2.5 shadow ${
-            !clicked ? "hidden" : ""
-          }`}
-        >
-          <ul className="p-2.5 ">
-            <li className="py-1">
-              <Link to={PROFILE}>Profile</Link>
-            </li>
-            <li className="py-1">
-              <Link to={PROFILE}>Saved</Link>
-            </li>
-            <li className="py-1">
-              <Link to={PROFILE}>Settings</Link>
-            </li>
-            <li className="py-1 ">
-              <Link to={PROFILE}>Switch Account</Link>
-            </li>
-          </ul>
-          <ul className="border-t border-mecury">
-            <li className="p-2.5 cursor-pointer" onClick={handleLogout}>
-              Log Out
-            </li>
-          </ul>
+      <div className="flex">
+        <Link to={DASHBOARD} arial-label="Home" className="hidden sm:block">
+          <Home />
+        </Link>
+        <Link to={DASHBOARD} arial-label="Home" className="hidden sm:block">
+          <Chat />
+        </Link>
+        <div className="relative">
+          <img
+            onClick={handleClick}
+            src={`${auth.user.photoURL ?? avatar}`}
+            alt={`${auth.user.displayName} avatar`}
+            className={`block rounded-full h-30 cursor-pointer ${
+              clicked ? "border border-dark" : ""
+            }  p-0.5`}
+          />
+          <div
+            className={`absolute bg-white w-48 -right-2.5 shadow ${
+              !clicked ? "hidden" : ""
+            }`}
+          >
+            <ul className="p-2.5 ">
+              <li className="py-1">
+                <Profile /> <Link to={PROFILE}>Profile</Link>
+              </li>
+              <li className="py-1">
+                <Bookmark />
+                <Link to={PROFILE}>Saved</Link>
+              </li>
+              <li className="py-1">
+                <Setting />
+                <Link to={PROFILE}>Settings</Link>
+              </li>
+            </ul>
+            <ul className="border-t border-mecury">
+              <li className="p-2.5 cursor-pointer" onClick={handleLogout}>
+                Log Out
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </>
