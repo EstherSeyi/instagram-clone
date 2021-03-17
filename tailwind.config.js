@@ -7,6 +7,7 @@ module.exports = {
       80: "2 2 80%",
       40: "1 1 40%",
       60: "2 2 60%",
+      35: "1 1 35%",
     },
 
     fontSize: {
@@ -14,21 +15,32 @@ module.exports = {
       14: "0.875rem",
       20: "1.125rem",
       24: "1.5rem",
-    },
-    maxWidth: {
-      350: "350px",
-      400: "400px",
-      500: "500px",
-      900: "900px",
+      38: "2.375rem",
     },
 
     extend: {
+      maxWidth: {
+        350: "350px",
+        400: "400px",
+        500: "500px",
+        900: "900px",
+      },
+      inset: { "95%": "95%" },
       width: {
+        50: "50px",
+        100: "100px",
+      },
+      lineHeight: {
         50: "50px",
       },
 
       height: {
         618: "618px",
+        200: "200px",
+        100: "100px",
+        54: "54px",
+        30: "30px",
+        35: "35px",
       },
 
       fontFamily: {
@@ -43,6 +55,7 @@ module.exports = {
         mecury2: "#e7e7e7",
         quickSilver: "#9b9b9b",
         creamish: "#fae7e6",
+        dark: "#333333",
       },
     },
   },
