@@ -5,11 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import { FirebaseProvider } from "./context/firebase";
+import { UserProvider } from "./context/user";
 
 ReactDOM.render(
   <React.StrictMode>
     <FirebaseProvider>
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </FirebaseProvider>
   </React.StrictMode>,
   document.getElementById("root")
