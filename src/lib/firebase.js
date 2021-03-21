@@ -17,7 +17,7 @@ const config = {
 };
 
 const firebaseApp = firebase.initializeApp(config);
-const { FieldValue } = firebaseApp.firestore();
+const { FieldValue } = firebase.firestore;
 
 // seedDatabase(firebase);
 export { firebaseApp as firebase, FieldValue };
