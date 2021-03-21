@@ -5,7 +5,7 @@ import { DASHBOARD, LOGIN, SIGN_UP, PROFILE } from "../constants/routes";
 import { useAuth } from "../context/user";
 
 import logo from "../images/logo.png";
-import avatar from "../images/avatars/raphael.jpg";
+// import avatar from "..";
 
 import Profile from "./icons/profile";
 import Bookmark from "./icons/bookmark";
@@ -59,6 +59,8 @@ const Avatar = () => {
     await logout(history);
   };
 
+  console.log(auth.user, "$$$");
+
   return (
     <>
       <div className="flex">
@@ -71,9 +73,12 @@ const Avatar = () => {
         <div className="relative">
           <img
             onClick={handleClick}
-            src={`${auth.user.photoURL ?? avatar}`}
+            src={`${
+              auth.user.photoURL ??
+              `${process.env.PUBLIC_URL}/assets/images/avatars/meav.jpg`
+            }`}
             alt={`${auth.user.displayName} avatar`}
-            className={`block rounded-full h-30 cursor-pointer ${
+            className={`block rounded-full h-8 w-8 cursor-pointer ${
               clicked ? "border border-dark" : ""
             }  p-0.5`}
           />
