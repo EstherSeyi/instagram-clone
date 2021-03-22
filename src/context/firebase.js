@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 
 import { firebase, FieldValue } from "../lib/firebase";
 
@@ -17,4 +17,6 @@ const FirebaseProvider = ({ children }) => {
   );
 };
 
-export { FirebaseProvider, FirebaseContext };
+const useFirebase = () => useContext(FirebaseContext);
+
+export { FirebaseProvider, FirebaseContext, useFirebase };
