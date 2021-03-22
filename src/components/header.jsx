@@ -3,9 +3,9 @@ import { useState } from "react";
 
 import { DASHBOARD, LOGIN, SIGN_UP, PROFILE } from "../constants/routes";
 import { useAuth } from "../context/user";
+import useUser from "../hooks/useUser";
 
 import logo from "../images/logo.png";
-// import avatar from "..";
 
 import Profile from "./icons/profile";
 import Bookmark from "./icons/bookmark";
@@ -50,6 +50,7 @@ export default function Header() {
 const Avatar = () => {
   const history = useHistory();
   const { logout, auth } = useAuth();
+  const { user } = useUser();
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     setClicked((prevState) => !prevState);
@@ -58,8 +59,6 @@ const Avatar = () => {
   const handleLogout = async () => {
     await logout(history);
   };
-
-  console.log(auth.user, "$$$");
 
   return (
     <>
@@ -75,9 +74,9 @@ const Avatar = () => {
             onClick={handleClick}
             src={`${
               auth.user.photoURL ??
-              `${process.env.PUBLIC_URL}/assets/images/avatars/meav.jpg`
+              `${process.env.PUBLIC_URL}/assets/images/avatars/${user.username}.jpg`
             }`}
-            alt={`${auth.user.displayName} avatar`}
+            alt={`${user.username} avatar`}
             className={`block rounded-full h-8 w-8 cursor-pointer ${
               clicked ? "border border-dark" : ""
             }  p-0.5`}
