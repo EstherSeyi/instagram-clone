@@ -1,11 +1,10 @@
-// NOTE: replace 'bmjpkU8bBWRse2JwKgzOGTv5tUI3' with your Firebase auth user id (can be taken from Firebase at the auth section! Look for User UID)
 export function seedDatabase(firebase) {
   const users = [
     {
       userId: "QEfewJ9GDyayqnFMeq46gjteqAf1",
-      username: "karl",
-      fullName: "Karl Hadwen",
-      emailAddress: "karlhadwen@gmail.com",
+      username: "hesthersheyi",
+      fullName: "Seyi Ogundijo",
+      emailAddress: "sheyiogundijo@gmail.com",
       following: ["2"],
       followers: ["2", "3", "4"],
       dateCreated: Date.now(),

@@ -12,6 +12,7 @@ module.exports = {
 
     fontSize: {
       10: "0.625rem",
+      12: "0.75rem",
       14: "0.875rem",
       20: "1.125rem",
       24: "1.5rem",
@@ -55,8 +56,11 @@ module.exports = {
         mecury: "#e2e2e2",
         mecury2: "#e7e7e7",
         quickSilver: "#9b9b9b",
+        quickSilver2: "#868686",
+        quickSilver3: "#8e8e8e",
         creamish: "#fae7e6",
         dark: "#333333",
+        lynxWhite: "#f7f7f7",
       },
     },
   },

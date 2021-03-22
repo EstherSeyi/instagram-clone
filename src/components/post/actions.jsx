@@ -35,7 +35,7 @@ export default function Actions({
 
   return (
     <>
-      <div className="flex">
+      <div className="flex mt-2">
         <Heart
           handleToggleLiked={handleToggleLiked}
           toggleLiked={toggleLiked}

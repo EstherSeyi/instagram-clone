@@ -12,7 +12,7 @@ export default function Dashboard() {
   return (
     <div className="bg-alabaster">
       <Header />
-      <div className="grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg">
+      <div className="md:grid grid-cols-3 gap-4 justify-between mx-auto  w-11/12 max-w-screen-lg">
         <Timeline />
         <Sidebar />
       </div>

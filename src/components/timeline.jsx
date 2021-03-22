@@ -9,7 +9,7 @@ export default function Timeline() {
   const { photos } = useFollowedUsersPhotos();
 
   return (
-    <section className="max-w-600 col-span-2">
+    <section className="max-w-600 mx-auto md:mx-0 col-span-2">
       {!photos ? (
         <Skeleton count={4} width={600} height={500} className="mb-5" />
       ) : photos?.length ? (

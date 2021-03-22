@@ -1,4 +1,4 @@
-import { firebase } from "../lib/firebase";
+import { firebase, FieldValue } from "../lib/firebase";
 
 export const doesUsernameExist = async (userName) => {
   const username = userName.toLowerCase();
@@ -50,3 +50,51 @@ export const getUserFollowedPhotos = async (userId, followingUserIds) => {
 
   return photosWithUserDetails;
 };
+
+export const getSuggestedProfiles = async (userId) => {
+  //getting all users limiting to 10
+  const result = await firebase.firestore().collection("users").limit(10).get();
+
+  //get only the current user and get the people they are following
+  const [{ following: userFollowing = [] }] = await getUserByUserId(userId);
+
+  // get all users that are not in the userFollowing array.
+  return result.docs
+    .map((user) => ({ ...user.data(), docId: user.id }))
+    .filter(
+      (profile) =>
+        profile.userId !== userId && !userFollowing.includes(profile.userId)
+    );
+};
+
+export async function updateUserFollowing(
+  docId,
+  profileId,
+  isFollowingProfile
+) {
+  return firebase
+    .firestore()
+    .collection("users")
+    .doc(docId)
+    .update({
+      following: isFollowingProfile
+        ? FieldValue.arrayRemove(profileId)
+        : FieldValue.arrayUnion(profileId),
+    });
+}
+
+export async function updateFollowedUserFollowers(
+  docId,
+  followingUserId,
+  isFollowingProfile
+) {
+  return firebase
+    .firestore()
+    .collection("users")
+    .doc(docId)
+    .update({
+      following: isFollowingProfile
+        ? FieldValue.arrayRemove(followingUserId)
+        : FieldValue.arrayUnion(followingUserId),
+    });
+}
