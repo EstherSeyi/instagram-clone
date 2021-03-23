@@ -53,12 +53,14 @@ const Header = ({
               {`${followerCount > 1 ? "s" : ""}`}
             </p>
             <p>
-              <span className="font-bold">{profile.following.length}</span>{" "}
+              <span className="font-bold">
+                {profile?.following?.length ?? 0}
+              </span>{" "}
               following
             </p>
           </div>
           <div>
-            <p className="font-bold">{profile.fullName}</p>
+            <p className="font-bold">{profile?.fullName ?? ""}</p>
             <p className="text-quickSilver2">Followed by dali and karl</p>
           </div>
         </div>
@@ -73,7 +75,7 @@ const Header = ({
           <span>follower{`${followerCount > 1 ? "s" : ""}`}</span>
         </p>
         <p className="flex flex-col items-center">
-          <span className="font-bold">{profile.following.length}</span>
+          <span className="font-bold">{profile?.following?.length ?? 0}</span>
           <span>following</span>
         </p>
       </div>
