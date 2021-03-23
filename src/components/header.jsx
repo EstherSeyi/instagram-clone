@@ -88,7 +88,7 @@ const Avatar = () => {
           >
             <ul className="p-2.5 ">
               <li className="py-1">
-                <Profile /> <Link to={PROFILE}>Profile</Link>
+                <Profile /> <Link to={`/p/${user.username}`}>Profile</Link>
               </li>
               <li className="py-1">
                 <Bookmark />

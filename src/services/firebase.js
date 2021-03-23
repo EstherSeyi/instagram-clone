@@ -98,3 +98,33 @@ export async function updateFollowedUserFollowers(
         : FieldValue.arrayUnion(followingUserId),
     });
 }
+
+export const getUserByUsername = async (username) => {
+  const result = await firebase
+    .firestore()
+    .collection("users")
+    .where("username", "==", username)
+    .get();
+
+  const user = result.docs.map((item) => ({
+    ...item.data(),
+    docId: item.id,
+  }));
+
+  return user.length > 0 ? user : false;
+};
+
+export const getUserPhotosByUsername = async (username) => {
+  const [{ ...user } = 0] = await getUserByUsername(username);
+
+  const response = await firebase
+    .firestore()
+    .collection("photos")
+    .where("userId", "==", user.userId)
+    .get();
+
+  return response.docs.map((item) => ({
+    ...item.data(),
+    docId: item.id,
+  }));
+};
