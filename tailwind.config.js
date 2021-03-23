@@ -39,6 +39,8 @@ module.exports = {
       height: {
         618: "618px",
         200: "200px",
+        300: "300px",
+
         100: "100px",
         54: "54px",
         30: "30px",
@@ -61,6 +63,10 @@ module.exports = {
         creamish: "#fae7e6",
         dark: "#333333",
         lynxWhite: "#f7f7f7",
+      },
+      flex: {
+        30: "1 1 30%",
+        60: "2 2 60%",
       },
     },
   },
