@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import useUser from "../../hooks/useUser";
 
 const Header = ({
   photosCount,
   followerCount,
-  setFollowerCount,
+  // setFollowerCount,
   profile,
   username,
 }) => {
   const { user } = useUser();
-  const [isFollowingProfile, setIsFollowingProfile] = useState(false);
+  const [
+    isFollowingProfile,
+    // setIsFollowingProfile
+  ] = useState(false);
   const activeBtnFollowState = user.username && user.username !== username;
 
   return (
