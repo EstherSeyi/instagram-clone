@@ -93,7 +93,7 @@ export async function updateFollowedUserFollowers(
     .collection("users")
     .doc(docId)
     .update({
-      following: isFollowingProfile
+      followers: isFollowingProfile
         ? FieldValue.arrayRemove(followingUserId)
         : FieldValue.arrayUnion(followingUserId),
     });
@@ -127,4 +127,35 @@ export const getUserPhotosByUsername = async (username) => {
     ...item.data(),
     docId: item.id,
   }));
+};
+
+export const toggleFollow = async (
+  isFollowingProfile,
+  activeUserDocId,
+  profileDocId,
+  profileId,
+  followingUserId
+) => {
+  await updateUserFollowing(activeUserDocId, profileId, isFollowingProfile);
+  await updateFollowedUserFollowers(
+    profileDocId,
+    followingUserId,
+    isFollowingProfile
+  );
+};
+
+export const isUserFollowingProfile = async (activeUsername, profileUserId) => {
+  const result = await firebase
+    .firestore()
+    .collection("users")
+    .where("username", "==", activeUsername)
+    .where("following", "array-contains", profileUserId)
+    .get();
+
+  const [response = {}] = result.docs.map((item) => ({
+    ...item.data(),
+    docId: item.id,
+  }));
+
+  return !!response.fullName;
 };
