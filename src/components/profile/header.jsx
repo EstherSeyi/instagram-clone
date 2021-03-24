@@ -1,20 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import useUser from "../../hooks/useUser";
+import { toggleFollow, isUserFollowingProfile } from "../../services/firebase";
 
 const Header = ({
   photosCount,
   followerCount,
-  // setFollowerCount,
+  setFollowerCount,
   profile,
   username,
 }) => {
   const { user } = useUser();
-  const [
-    isFollowingProfile,
-    // setIsFollowingProfile
-  ] = useState(false);
+  const [isFollowingProfile, setIsFollowingProfile] = useState(false);
   const activeBtnFollowState = user.username && user.username !== username;
+
+  const handleToggleFollow = async () => {
+    setIsFollowingProfile((prevState) => !prevState);
+    setFollowerCount({
+      followerCount: isFollowingProfile ? followerCount - 1 : followerCount + 1,
+    });
+
+    await toggleFollow(
+      isFollowingProfile,
+      user.docId,
+      profile.docId,
+      profile.userId,
+      user.userId
+    );
+  };
+
+  useEffect(() => {
+    const isLoggedInUserFollowingProfile = async () => {
+      const isFollowing = await isUserFollowingProfile(
+        user.username,
+        profile.userId
+      );
+      setIsFollowingProfile(isFollowing);
+    };
+
+    if (user.username && profile.userId) {
+      isLoggedInUserFollowingProfile();
+    }
+  }, [user.username, profile.userId]);
 
   return (
     <>
@@ -38,7 +65,10 @@ const Header = ({
                 {username}
               </p>
               {activeBtnFollowState && (
-                <button className="block bg-azureRadiance text-white rounded-sm text-14 py-1 px-6 font-bold focus:outline-none">
+                <button
+                  className="block bg-azureRadiance text-white rounded-sm text-14 py-1 px-6 font-bold focus:outline-none"
+                  onClick={handleToggleFollow}
+                >
                   {isFollowingProfile ? "Unfollow" : "Follow"}
                 </button>
               )}
