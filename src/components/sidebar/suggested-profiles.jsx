@@ -25,7 +25,7 @@ const SuggestedProfile = ({ userDocId, username, profileId, userId }) => {
               src={`${process.env.PUBLIC_URL}/assets/images/`}
               className="mr-4 rounded-full w-8 h-8"
               src={`${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`}
-              alt={`Follow ${username}`}
+              alt={`Followed ${username}`}
             />
             <div>
               <Link to={`/p/${username}`}>
