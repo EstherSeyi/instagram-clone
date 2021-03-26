@@ -17,6 +17,7 @@ module.exports = {
       20: "1.125rem",
       24: "1.5rem",
       38: "2.375rem",
+      55: "3.125rem",
     },
 
     extend: {
@@ -63,6 +64,7 @@ module.exports = {
         creamish: "#fae7e6",
         dark: "#333333",
         lynxWhite: "#f7f7f7",
+        modalbg: "rgba(0, 0, 0, 0.3)",
       },
       flex: {
         30: "1 1 30%",
