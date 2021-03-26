@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 
 import AddComment from "./add-comment";
+import SinglePost from "../single-post";
+
+import { useModal } from "../../context/modal";
 
 export default function Comments({
   docId,
@@ -10,13 +13,18 @@ export default function Comments({
   posted,
   commentInput,
 }) {
+  const { open } = useModal();
   const [comments, setComments] = useState(allComments);
 
   return (
     <>
       <div className="pl-4 pt-1 pb-4 text-14">
         {comments.length >= 3 && (
-          <Link to="/" className="text-quickSilver2 font-bold">
+          <Link
+            to="#"
+            onClick={() => open(<SinglePost />)}
+            className="text-quickSilver2 font-bold"
+          >
             View all {comments.length} comments
           </Link>
         )}
