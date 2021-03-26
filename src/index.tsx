@@ -6,12 +6,18 @@ import reportWebVitals from "./reportWebVitals";
 
 import { FirebaseProvider } from "./context/firebase";
 import { UserProvider } from "./context/user";
+import { ModalProvider } from "./context/modal";
+
+import Modal from "./components/modal";
 
 ReactDOM.render(
   <React.StrictMode>
     <FirebaseProvider>
       <UserProvider>
-        <App />
+        <ModalProvider>
+          <Modal />
+          <App />
+        </ModalProvider>
       </UserProvider>
     </FirebaseProvider>
   </React.StrictMode>,
