@@ -49,7 +49,7 @@ export default function Header() {
 
 const Avatar = () => {
   const history = useHistory();
-  const { logout, auth } = useAuth();
+  const { logout } = useAuth();
   const { user } = useUser();
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
@@ -72,9 +72,8 @@ const Avatar = () => {
         <div className="relative">
           <img
             onClick={handleClick}
-            src={`${
-              auth.user.photoURL ??
-              `${process.env.PUBLIC_URL}/assets/images/avatars/${user.username}.jpg`
+            src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
+              user?.username ? user.username + ".jpg" : "dummy.png"
             }`}
             alt={`${user.username} avatar`}
             className={`block rounded-full h-8 w-8 cursor-pointer ${

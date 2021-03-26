@@ -23,7 +23,9 @@ const SuggestedProfile = ({ userDocId, username, profileId, userId }) => {
           <div className="flex">
             <img
               className="mr-4 rounded-full w-8 h-8"
-              src={`${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`}
+              src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
+                username ? username + ".jpg" : "dummy.png"
+              }`}
               alt={`Follow ${username}`}
             />
             <div>

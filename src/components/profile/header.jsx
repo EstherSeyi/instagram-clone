@@ -50,7 +50,9 @@ const Header = ({
           <img
             className="rounded-full h-40 w-40 flex"
             alt={`${username} profile avatar`}
-            src={`${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`}
+            src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
+              username ? username + ".jpg" : "dummy.png"
+            }`}
           />
         </div>
         <div className="self-center sm:flex-60">
@@ -58,7 +60,9 @@ const Header = ({
             <img
               className="rounded-full h-20 w-20 mr-8 flex sm:hidden"
               alt={`${username} profile avatar`}
-              src={`${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`}
+              src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
+                username ? username + ".jpg" : "dummy.png"
+              }`}
             />
             <div className="flex flex-col sm:flex-row mb-5 sm:items-center">
               <p className="text-24 mb-4 sm:mb-0  mr-8 self-center">

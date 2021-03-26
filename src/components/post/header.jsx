@@ -6,7 +6,9 @@ export default function Header({ username }) {
       <div className="flex">
         <img
           className="mr-4 h-10 w-10 rounded-full"
-          src={`${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`}
+          src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
+            username ? username + ".jpg" : "dummy.png"
+          }`}
           alt={`${username ?? "user"}'s avatar`}
         />
         <Link className="block self-center" to={`/p/${username}`}>

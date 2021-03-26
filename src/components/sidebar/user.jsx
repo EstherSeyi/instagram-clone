@@ -10,7 +10,9 @@ const User = ({ username, fullName }) => {
       <div className="flex items-center justify-between">
         <img
           className="rounded-full w-12 h-12 flex mr-2"
-          src={`${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`}
+          src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
+            username ? username + ".jpg" : "dummy.png"
+          }`}
           alt="My profile"
         />
       </div>
