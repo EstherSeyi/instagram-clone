@@ -39,6 +39,7 @@ export default function Actions({
         <Heart
           handleToggleLiked={handleToggleLiked}
           toggleLiked={toggleLiked}
+          cssClasses="ml-4"
         />
         <Chat cssClasses="ml-4" onClick={handleFocus} />
       </div>

@@ -1,13 +1,13 @@
-const Heart = ({ handleToggleLiked, toggleLiked }) => {
+const Heart = ({ handleToggleLiked, toggleLiked, cssClasses }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill={`${toggleLiked ? "red" : "none"}`}
       viewBox="0 0 24 24"
       stroke="currentColor"
-      className={`w-8 ml-4 cursor-pointer ${
+      className={`w-8 cursor-pointer ${
         toggleLiked ? "fill-red text-red" : "text-black"
-      }`}
+      } ${cssClasses}`}
       onClick={handleToggleLiked}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
