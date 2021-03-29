@@ -21,7 +21,7 @@ export default function Timeline() {
           );
         })
       ) : (
-        <p className="text-center text-2xl">Follow people to se photos</p>
+        <p className="text-center text-2xl">Follow people to see photos</p>
       )}
     </section>
   );
