@@ -40,7 +40,7 @@ const Modal = () => {
           &times;
         </button>
       </div>
-      <div ref={modalRef} className="bg-white w-2/3 mx-auto">
+      <div ref={modalRef} className="w-11/12 lg:w-2/3 mx-auto">
         {modalComponent}
       </div>
     </div>
