@@ -31,6 +31,7 @@ module.exports = {
       inset: { "95%": "95%" },
       width: {
         50: "50px",
+        80: "80px",
         100: "100px",
       },
       lineHeight: {
@@ -44,6 +45,7 @@ module.exports = {
         300: "300px",
 
         100: "100px",
+        80: "80px",
         54: "54px",
         30: "30px",
         35: "35px",
