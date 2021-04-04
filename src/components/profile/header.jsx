@@ -68,6 +68,14 @@ const Header = ({
               <p className="text-24 mb-4 sm:mb-0  mr-8 self-center">
                 {username}
               </p>
+              {user.username === username && (
+                <button
+                  className="block bg-azureRadiance text-white rounded-sm text-14 py-1 px-6 font-bold focus:outline-none"
+                  // onClick={handleToggleFollow}
+                >
+                  Edit Profile
+                </button>
+              )}
               {activeBtnFollowState && (
                 <button
                   className="block bg-azureRadiance text-white rounded-sm text-14 py-1 px-6 font-bold focus:outline-none"
