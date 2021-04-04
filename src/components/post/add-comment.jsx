@@ -1,23 +1,15 @@
 import { useState } from "react";
 
 import { useFirebase } from "../../context/firebase";
-// import { useAuth } from "../../context/user";
 import useUser from "../../hooks/useUser";
 
-export default function AddComment({
-  docId,
-  comments,
-  setComments,
-  commentInput,
-}) {
+export default function AddComment({ docId, setComments, commentInput }) {
   const [values, setValues] = useState({
     comment: "",
     loading: false,
   });
   const { firebase, FieldValue } = useFirebase();
   const { user } = useUser();
-
-  // const displayName = auth?.user?.displayName;
 
   const handleChange = ({ target }) => {
     setValues((prevState) => ({
@@ -86,9 +78,9 @@ export default function AddComment({
           className={`block w-2/12 text-14 text-azureRadiance ${
             values.loading ? "" : "font-bold"
           } focus:outline-none ${
-            !isValid ? "opacity-30 cursor-not-allowed" : ""
+            !isValid || values.loading ? "opacity-30 cursor-not-allowed" : ""
           }`}
-          disabled={!isValid}
+          disabled={!isValid || values.loading}
           type="submit"
         >
           {values.loading ? "Loading..." : " Post"}
