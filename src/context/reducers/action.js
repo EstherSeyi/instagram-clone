@@ -1,10 +1,13 @@
 const actionReducer = (state = {}, { type, payload }) => {
   switch (type) {
-    case "SET_CONTENT":
+    case "SET_LIKES":
       return {
         ...state,
-        content: payload.content,
-        likes: payload.likes,
+        noOfLikes: payload.noOfLikes,
+      };
+    case "SET_TOGGLE_LIKED":
+      return {
+        ...state,
         toggleLiked: payload.toggleLiked,
       };
 
