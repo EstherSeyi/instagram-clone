@@ -12,6 +12,8 @@ export default function Comments({
   comments: allComments,
   posted,
   commentInput,
+  poster,
+  likeDetails,
 }) {
   const { open } = useModal();
   const [comments, setComments] = useState(allComments);
@@ -22,7 +24,15 @@ export default function Comments({
         {comments.length >= 3 && (
           <Link
             to="#"
-            onClick={() => open(<SinglePost />)}
+            onClick={() =>
+              open(
+                <SinglePost
+                  poster={poster}
+                  comments={comments}
+                  likeDetails={{ ...likeDetails, docId }}
+                />
+              )
+            }
             className="text-quickSilver2 font-bold"
           >
             View all {comments.length} comments
