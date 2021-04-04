@@ -3,30 +3,33 @@ import { createContext, useReducer, useContext } from "react";
 import actionReducer from "./reducers/action";
 
 const initialState = {
-  content: null,
-  toggleLiked: false,
-  likes: 0,
+  noOfLikes: 0,
+  toggleLiked: null,
 };
 const ActionContext = createContext(initialState);
 
 const ActionProvider = ({ children }) => {
   const [state, dispatch] = useReducer(actionReducer, initialState);
 
-  const setContent = (content) => {
-    console.log(content, "KINDA");
-
+  const setLikes = (noOfLikes) => {
     dispatch({
-      type: "SET_CONTENT",
+      type: "SET_LIKES",
       payload: {
-        content,
-        likes: content.likes.length,
-        toggleLiked: content.userLikedPhoto,
+        noOfLikes,
+      },
+    });
+  };
+  const setToggleLiked = (toggleLiked) => {
+    dispatch({
+      type: "SET_TOGGLE_LIKED",
+      payload: {
+        toggleLiked,
       },
     });
   };
 
   return (
-    <ActionContext.Provider value={{ state, setContent }}>
+    <ActionContext.Provider value={{ state, setLikes, setToggleLiked }}>
       {children}
     </ActionContext.Provider>
   );
