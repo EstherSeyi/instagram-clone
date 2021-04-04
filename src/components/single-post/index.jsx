@@ -7,13 +7,12 @@ import AddComment from "./add-comment";
 
 // import useFollowedUsersPhotos from "../../hooks/useFollowedUsersPhotos";
 
-const SinglePost = ({ comments, poster, actions }) => {
+const SinglePost = ({ comments: allComments, poster, likeDetails }) => {
   // const { photos } = useFollowedUsersPhotos();
   const [showForm, setShowForm] = useState(false);
+  const [comments, setComments] = useState(allComments);
   const commentInput = useRef(null);
   const handleFocus = () => commentInput.current.focus();
-
-  console.log(actions);
 
   return (
     <div className="bg-white flex flex-col md:flex-row">
@@ -32,9 +31,14 @@ const SinglePost = ({ comments, poster, actions }) => {
           <Actions
             setShowForm={setShowForm}
             handleFocus={handleFocus}
-            actions={actions}
+            likeDetails={likeDetails}
           />
-          <AddComment showForm={showForm} commentInput={commentInput} />
+          <AddComment
+            showForm={showForm}
+            commentInput={commentInput}
+            docId={likeDetails.docId}
+            setComments={setComments}
+          />
         </div>
       </div>
     </div>
