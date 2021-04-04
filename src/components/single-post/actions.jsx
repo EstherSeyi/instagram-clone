@@ -1,21 +1,31 @@
+import { useEffect } from "react";
+
 import Heart from "../icons/heart";
 import Chat from "../icons/chat";
 
+import { useAction } from "../../context/actions";
 import { useFirebase } from "../../context/firebase";
+import { useAuth } from "../../context/user";
 
-const Actions = ({ handleFocus, setShowForm }) => {
-  const actions = {
-    toggleLiked: 0,
-    docId: "ghgj",
-    likes: 0,
-    userId: "11",
-  };
-
+const Actions = ({ handleFocus, setShowForm, likeDetails }) => {
+  const { state, setToggleLiked, setLikes } = useAction();
   const { firebase, FieldValue } = useFirebase();
-  const { toggleLiked, docId, likes, userId } = actions;
+
+  const { totalLikes, likedPhoto, docId } = likeDetails;
+
+  const { noOfLikes, toggleLiked } = state;
+
+  useEffect(() => {
+    setToggleLiked(likedPhoto);
+    setLikes(totalLikes);
+  }, []);
+
+  const { auth } = useAuth();
+
+  const userId = auth?.user?.uid ?? "";
 
   const handleToggleLiked = async () => {
-    // setToggleLiked((prevState) => !prevState);
+    setToggleLiked(!toggleLiked);
     await firebase
       .firestore()
       .collection("photos")
@@ -25,7 +35,7 @@ const Actions = ({ handleFocus, setShowForm }) => {
           ? FieldValue.arrayRemove(userId)
           : FieldValue.arrayUnion(userId),
       });
-    // setLikes((likes) => (toggleLiked ? likes - 1 : likes + 1));
+    setLikes(!toggleLiked ? noOfLikes + 1 : noOfLikes - 1);
   };
 
   return (
@@ -46,7 +56,7 @@ const Actions = ({ handleFocus, setShowForm }) => {
       </div>
       <div className="pl-0 md:p-4 md:py-0">
         <p>
-          Liked by <span className="font-bold">{likes}</span>
+          Liked by <span className="font-bold">{noOfLikes}</span>
         </p>
       </div>
     </div>
