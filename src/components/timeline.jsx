@@ -6,11 +6,11 @@ import useFollowedUsersPhotos from "../hooks/useFollowedUsersPhotos";
 import React from "react";
 
 export default function Timeline() {
-  const { photos } = useFollowedUsersPhotos();
+  const { photos, loading } = useFollowedUsersPhotos();
 
   return (
     <section className="max-w-600 mx-auto md:mx-0 col-span-2">
-      {!photos ? (
+      {loading && !photos ? (
         <Skeleton count={4} width={600} height={500} className="mb-5" />
       ) : photos?.length ? (
         photos.map((photo) => {
