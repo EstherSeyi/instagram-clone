@@ -18,7 +18,7 @@ const Actions = ({ handleFocus, setShowForm, likeDetails }) => {
   useEffect(() => {
     setToggleLiked(likedPhoto);
     setLikes(totalLikes);
-  }, [likedPhoto, totalLikes]);
+  }, [likedPhoto, totalLikes, setToggleLiked, setLikes]);
 
   const { auth } = useAuth();
 
