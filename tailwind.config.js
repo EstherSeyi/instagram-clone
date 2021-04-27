@@ -1,5 +1,14 @@
 module.exports = {
-  purge: [],
+  mode: "jit",
+  purge: {
+    enabled: true,
+    content: [
+      "src/**/*.js",
+      "src/**/*.jsx",
+      "src/**/*.tsx",
+      "public/**/*.html",
+    ],
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     flex: {
@@ -49,6 +58,7 @@ module.exports = {
         54: "54px",
         30: "30px",
         35: "35px",
+        "60vh": "60vh",
       },
 
       fontFamily: {
