@@ -159,3 +159,17 @@ export const isUserFollowingProfile = async (activeUsername, profileUserId) => {
 
   return !!response.fullName;
 };
+
+export async function storeImage(reference, username, file) {
+  const storage = firebase.storage();
+  const storageRef = storage.ref();
+  const specificRef = storageRef.child(`${reference}/${username}.jpg`);
+
+  specificRef.put(file, { contentType: "image/jpeg" });
+}
+
+export async function updateUserImage(docId, imageUrl) {
+  return firebase.firestore().collection("users").doc(docId).update({
+    imageSrc: imageUrl,
+  });
+}

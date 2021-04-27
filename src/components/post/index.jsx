@@ -24,7 +24,11 @@ const Post = ({ content }) => {
         comments={content.comments}
         posted={content.dateCreated}
         commentInput={commentInput}
-        poster={{ id: content.userId, username: content.username }}
+        poster={{
+          id: content.userId,
+          username: content.username,
+          image: content.imageSrc,
+        }}
         likeDetails={{
           totalLikes: content.likes.length,
           likedPhoto: content.userLikedPhoto,

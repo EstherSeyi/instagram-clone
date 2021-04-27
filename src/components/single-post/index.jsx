@@ -5,22 +5,19 @@ import Comments from "./comments";
 import Actions from "./actions";
 import AddComment from "./add-comment";
 
-// import useFollowedUsersPhotos from "../../hooks/useFollowedUsersPhotos";
-
 const SinglePost = ({ comments: allComments, poster, likeDetails }) => {
-  // const { photos } = useFollowedUsersPhotos();
   const [showForm, setShowForm] = useState(false);
   const [comments, setComments] = useState(allComments);
   const commentInput = useRef(null);
   const handleFocus = () => commentInput.current.focus();
 
   return (
-    <div className="bg-white flex flex-col md:flex-row">
+    <div className="bg-white flex flex-col md:flex-row md:h-60vh">
       <Header small poster={poster} />
       <div className="flex-60">
         <img
           className="w-2/3 mx-auto md:m-0 md:w-full h-full"
-          src={`${process.env.PUBLIC_URL}/assets/images/avatars/karl.jpg`}
+          src={`${process.env.PUBLIC_URL}/assets${poster.image}`}
           alt="post"
         />
       </div>

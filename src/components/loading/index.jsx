@@ -12,7 +12,7 @@ const Box = styled.div.attrs({})`
 const Loading = () => {
   return (
     <Box>
-      <img src={loader} alt="Loader" className="h-80 w-80" />
+      <img src={loader} alt="Loader" className="h-54 w-54" />
     </Box>
   );
 };

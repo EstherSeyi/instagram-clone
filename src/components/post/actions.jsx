@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import { FirebaseContext } from "../../context/firebase";
 import { useAuth } from "../../context/user";
@@ -32,6 +32,11 @@ export default function Actions({
       });
     setLikes((likes) => (toggleLiked ? likes - 1 : likes + 1));
   };
+
+  useEffect(() => {
+    setToggleLiked(likedPhoto);
+    setLikes(totalLikes);
+  }, [likedPhoto, totalLikes]);
 
   return (
     <>

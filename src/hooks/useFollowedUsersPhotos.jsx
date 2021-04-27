@@ -8,12 +8,14 @@ export default function useFollowedUsersPhotos() {
 
   const userId = auth?.user?.uid ?? "";
   const [photos, setPhotos] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getTimelinePhotos = async () => {
+      setLoading(true);
       const user = await getUserByUserId(userId);
 
-      if (user?.length && user[0]?.following) {
+      if (user?.length && user[0]?.following && user[0]?.following?.length) {
         const followedUserPhotos = await getUserFollowedPhotos(
           userId,
           user[0].following
@@ -22,9 +24,10 @@ export default function useFollowedUsersPhotos() {
         followedUserPhotos.sort((a, b) => b.dateCreated - a.dateCreated);
         setPhotos(followedUserPhotos);
       }
+      setLoading(false);
     };
     getTimelinePhotos();
   }, [userId]);
 
-  return { photos };
+  return { photos, loading };
 }
