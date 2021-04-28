@@ -43,6 +43,8 @@ const Header = ({
     }
   }, [user.username, profile.userId]);
 
+  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`;
+
   return (
     <>
       <div className="flex mb-4 sm:mb-10">
@@ -50,9 +52,11 @@ const Header = ({
           <img
             className="rounded-full h-40 w-40 flex"
             alt={`${username} profile avatar`}
-            src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
-              username ? username + ".jpg" : "dummy.png"
-            }`}
+            src={userAvatar}
+            onError={(e) => {
+              e.target.onError = null;
+              e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
+            }}
           />
         </div>
         <div className="self-center sm:flex-60">

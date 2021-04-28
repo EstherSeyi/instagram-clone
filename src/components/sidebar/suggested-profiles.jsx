@@ -16,6 +16,8 @@ const SuggestedProfile = ({ userDocId, username, profileId, userId }) => {
     await updateFollowedUserFollowers(userDocId, userId);
   };
 
+  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`;
+
   return (
     <>
       {!followed ? (
@@ -23,9 +25,11 @@ const SuggestedProfile = ({ userDocId, username, profileId, userId }) => {
           <div className="flex">
             <img
               className="mr-4 rounded-full w-8 h-8"
-              src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
-                username ? username + ".jpg" : "dummy.png"
-              }`}
+              src={userAvatar}
+              onError={(e) => {
+                e.target.onError = null;
+                e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
+              }}
               alt={`Follow ${username}`}
             />
             <div>

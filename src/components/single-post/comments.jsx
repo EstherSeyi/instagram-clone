@@ -23,12 +23,16 @@ const Comments = ({ comments, poster }) => {
 
 const Comment = ({ username, comment }) => {
   const { close } = useModal();
+  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`;
+
   return (
     <div className="flex text-14 my-4">
       <img
-        src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
-          username ? username + ".jpg" : "dummy.png"
-        }`}
+        src={userAvatar}
+        onError={(e) => {
+          e.target.onError = null;
+          e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
+        }}
         alt={`${username ?? "user"}'s avatar`}
         className="h-8 w-8 rounded-full mr-4"
       />

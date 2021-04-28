@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 
 const User = ({ username, fullName }) => {
+  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`;
+
   return !username || !fullName ? (
     <Skeleton count={1} height={61} />
   ) : (
@@ -10,9 +12,11 @@ const User = ({ username, fullName }) => {
       <div className="flex items-center justify-between">
         <img
           className="rounded-full w-12 h-12 flex mr-2"
-          src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
-            username ? username + ".jpg" : "dummy.png"
-          }`}
+          src={userAvatar}
+          onError={(e) => {
+            e.target.onError = null;
+            e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
+          }}
           alt="My profile"
         />
       </div>

@@ -38,6 +38,8 @@ const Header = ({ small, poster }) => {
     );
   };
 
+  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${user?.username}.jpg`;
+
   return (
     <div
       className={`${
@@ -47,9 +49,11 @@ const Header = ({ small, poster }) => {
       } text-14  font-bold md:border-b border-mecury2 pb-3 items-center`}
     >
       <img
-        src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
-          poster.username ? poster.username + ".jpg" : "dummy.png"
-        }`}
+        src={userAvatar}
+        onError={(e) => {
+          e.target.onError = null;
+          e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
+        }}
         alt="avatar"
         className="h-8 w-8 rounded-full mr-4"
       />

@@ -60,6 +60,8 @@ const Avatar = () => {
     await logout(history);
   };
 
+  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${user?.username}.jpg`;
+
   return (
     <>
       <div className="flex">
@@ -72,9 +74,11 @@ const Avatar = () => {
         <div className="relative">
           <img
             onClick={handleClick}
-            src={`${process.env.PUBLIC_URL}/assets/images/avatars/${
-              user?.username ? user.username + ".jpg" : "dummy.png"
-            }`}
+            src={userAvatar}
+            onError={(e) => {
+              e.target.onError = null;
+              e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
+            }}
             alt={`${user.username} avatar`}
             className={`block rounded-full h-8 w-8 cursor-pointer ${
               clicked ? "border border-dark" : ""
