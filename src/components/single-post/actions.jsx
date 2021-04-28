@@ -18,7 +18,8 @@ const Actions = ({ handleFocus, setShowForm, likeDetails }) => {
   useEffect(() => {
     setToggleLiked(likedPhoto);
     setLikes(totalLikes);
-  }, [likedPhoto, totalLikes, setToggleLiked, setLikes]);
+    // eslint-disable-next-line
+  }, [likedPhoto, totalLikes]);
 
   const { auth } = useAuth();
 
