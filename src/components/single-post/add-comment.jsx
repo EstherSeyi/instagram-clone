@@ -18,7 +18,6 @@ const AddComment = ({ commentInput, showForm, setComments, docId }) => {
       ...prevState,
       comment: target.value,
     }));
-    console.log(values);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -47,7 +46,6 @@ const AddComment = ({ commentInput, showForm, setComments, docId }) => {
         loading: false,
       }));
     } catch (error) {
-      console.log(error.message);
       setValues((prevState) => ({
         ...prevState,
         comment: "",

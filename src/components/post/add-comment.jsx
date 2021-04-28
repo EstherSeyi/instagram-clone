@@ -45,7 +45,6 @@ export default function AddComment({ docId, setComments, commentInput }) {
         loading: false,
       }));
     } catch (error) {
-      console.log(error.message);
       setValues((prevState) => ({
         ...prevState,
         comment: "",
