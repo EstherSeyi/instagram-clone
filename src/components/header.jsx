@@ -2,8 +2,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useState } from "react";
 
 import { DASHBOARD, LOGIN, SIGN_UP, PROFILE } from "../constants/routes";
-import { useAuth } from "../context/user";
-import useUser from "../hooks/useUser";
+import { useAuth } from "../context/Auth";
 
 import logo from "../images/logo.png";
 
@@ -14,7 +13,7 @@ import Chat from "./icons/chat";
 import Home from "./icons/home";
 
 export default function Header() {
-  const { auth } = useAuth();
+  const { state } = useAuth();
 
   return (
     <header className="py-3 border-b border-mecury2 bg-white mb-8">
@@ -24,7 +23,7 @@ export default function Header() {
             <img src={logo} alt="Instagram" className="h-30" />
           </h1>
         </Link>
-        {auth.isLoggedIn ? (
+        {state?.isLoggedIn ? (
           <Avatar />
         ) : (
           <div>
@@ -49,8 +48,8 @@ export default function Header() {
 
 const Avatar = () => {
   const history = useHistory();
-  const { logout } = useAuth();
-  const { user } = useUser();
+  const { logout, state } = useAuth();
+  // const { user } = useUser();
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     setClicked((prevState) => !prevState);
@@ -59,8 +58,6 @@ const Avatar = () => {
   const handleLogout = async () => {
     await logout(history);
   };
-
-  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${user?.username}.jpg`;
 
   return (
     <>
@@ -74,12 +71,12 @@ const Avatar = () => {
         <div className="relative">
           <img
             onClick={handleClick}
-            src={userAvatar}
+            src={state.user.userAvatar}
             onError={(e) => {
               e.target.onError = null;
               e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
             }}
-            alt={`${user.username} avatar`}
+            alt={`${state?.user.username} avatar`}
             className={`block rounded-full h-8 w-8 cursor-pointer ${
               clicked ? "border border-dark" : ""
             }  p-0.5`}
@@ -91,7 +88,8 @@ const Avatar = () => {
           >
             <ul className="p-2.5 ">
               <li className="py-1">
-                <Profile /> <Link to={`/p/${user.username}`}>Profile</Link>
+                <Profile />{" "}
+                <Link to={`/p/${state?.user.username}`}>Profile</Link>
               </li>
               <li className="py-1">
                 <Bookmark />
