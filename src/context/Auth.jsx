@@ -82,6 +82,13 @@ function AuthProvider(props) {
       const { data } = await request.post("v1/register", state);
       localStorage.setItem("token", data.token);
       dispatch(setLoading(false));
+
+      const decoded = jwt.decode(
+        data.token,
+        process.env.REACT_APP_ACCESS_TOKEN_SECRET ?? ""
+      );
+
+      dispatch(setLoggedIn({ id: decoded.id, username: decoded.username }));
       history.push(DASHBOARD);
     } catch (error) {
       dispatch(setLoading(false));
