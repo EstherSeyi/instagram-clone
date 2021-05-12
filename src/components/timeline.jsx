@@ -1,22 +1,24 @@
+import React from "react";
 import Skeleton from "react-loading-skeleton";
 
 import Post from "./post";
 
-import useFollowedUsersPhotos from "../hooks/useFollowedUsersPhotos";
-import React from "react";
+import { useAppQuery } from "../hooks/use-query-helpers";
 
-export default function Timeline() {
-  const { photos, loading } = useFollowedUsersPhotos();
+export default function Timeline({ userId }) {
+  const { data, isLoading: loading } = useAppQuery(`users-timeline_${userId}`, {
+    url: `v1/photo/${userId}`,
+  });
 
   return (
     <section className="max-w-600 mx-auto md:mx-0 col-span-2">
-      {loading && !photos ? (
+      {loading && !data?.payload ? (
         <Skeleton count={4} width={600} height={500} className="mb-5" />
-      ) : photos?.length ? (
-        photos.map((photo) => {
+      ) : data?.payload?.length ? (
+        data?.payload?.map((photo) => {
           return (
-            <React.Fragment key={photo.docId}>
-              <Post content={photo} />
+            <React.Fragment key={photo._id}>
+              <Post content={photo} userId={userId} />
             </React.Fragment>
           );
         })
