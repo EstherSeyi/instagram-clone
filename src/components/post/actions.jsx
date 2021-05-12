@@ -1,56 +1,70 @@
-import { useState, useContext, useEffect } from "react";
-
-import { FirebaseContext } from "../../context/firebase";
-import { useAuth } from "../../context/user";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "react-query";
 
 import Heart from "../icons/heart";
 import Chat from "../icons/chat";
 
-export default function Actions({
-  docId,
-  totalLikes,
-  likedPhoto,
-  handleFocus,
-}) {
-  const [toggleLiked, setToggleLiked] = useState(likedPhoto);
-  const { firebase, FieldValue } = useContext(FirebaseContext);
-  const [likes, setLikes] = useState(totalLikes);
-  const { auth } = useAuth();
+import { useAppMutation, useAppQuery } from "../../hooks/use-query-helpers";
+import { useAuth } from "../../context/Auth";
 
-  const userId = auth?.user?.uid ?? "";
+export default function Actions({ content, handleFocus }) {
+  const { state } = useAuth();
 
-  const handleToggleLiked = async () => {
-    setToggleLiked((prevState) => !prevState);
-    await firebase
-      .firestore()
-      .collection("photos")
-      .doc(docId)
-      .update({
-        likes: toggleLiked
-          ? FieldValue.arrayRemove(userId)
-          : FieldValue.arrayUnion(userId),
-      });
-    setLikes((likes) => (toggleLiked ? likes - 1 : likes + 1));
-  };
+  const { data } = useAppQuery(`user-likes-post_${content._id}`, {
+    url: `v1/user/likes/${state?.user?.id}/${content?._id}`,
+  });
+  const [liked, setLiked] = useState(data?.payload);
+  const [totalLikes, setTotalLikes] = useState(content?.likes?.length);
 
   useEffect(() => {
-    setToggleLiked(likedPhoto);
-    setLikes(totalLikes);
-  }, [likedPhoto, totalLikes]);
+    setLiked(data?.payload);
+    setTotalLikes(content?.likes?.length);
+  }, [data?.payload, content?.likes?.length]);
+
+  const queryClient = useQueryClient();
+  const { mutate } = useAppMutation(
+    {
+      url: `v1/photo/like_unlike/${content?._id}`,
+      method: "patch",
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(`user-likes-post_${content._id}`, {
+          refetchInactive: true,
+        });
+        await queryClient.invalidateQueries(
+          `users-timeline_${state?.user?.id}`,
+          {
+            refetchInactive: true,
+          }
+        );
+      },
+    }
+  );
+
+  const handleToggleLiked = async () => {
+    setLiked((prevState) => !prevState);
+    setTotalLikes((prevState) => (liked ? prevState - 1 : prevState + 1));
+
+    await mutate({
+      id: state?.user?.id,
+      action: liked ? "unlike" : "like",
+    });
+  };
 
   return (
     <>
       <div className="flex mt-2">
         <Heart
           handleToggleLiked={handleToggleLiked}
-          toggleLiked={toggleLiked}
+          toggleLiked={liked}
           cssClasses="ml-4"
         />
         <Chat cssClasses="ml-4" onClick={handleFocus} />
       </div>
       <div className="p-4 py-0">
         <p>
-          Liked by <span className="font-bold">{likes}</span>
+          Liked by <span className="font-bold">{totalLikes}</span>
         </p>
       </div>
     </>
