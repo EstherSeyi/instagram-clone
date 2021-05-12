@@ -1,10 +1,12 @@
-import useUser from "../../hooks/useUser";
+import { useAuth } from "../../context/Auth";
 
 import User from "./user";
 import Suggestions from "./suggestions";
 
 export default function Sidebar() {
-  const { user: { userId, username, fullName } = {} } = useUser();
+  const {
+    user: { userId = "", username = "", fullName = "" } = {},
+  } = useAuth();
 
   return (
     <aside className="hidden md:block">
