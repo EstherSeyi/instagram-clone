@@ -2,28 +2,32 @@ import { Link } from "react-router-dom";
 
 import { useModal } from "../../context/modal";
 
-const Comments = ({ comments, poster }) => {
+const Comments = ({ content }) => {
   return (
     <div className="hidden md:block px-4 overflow-scroll flex-40 h-448">
-      {poster.caption && (
-        <Comment username={poster.username} comment={poster.caption} />
+      {content?.caption && (
+        <Comment
+          username={content?.user?.username}
+          comment={content?.caption}
+          userAvatar={content?.user?.avatarSrc}
+        />
       )}
 
-      {comments?.length &&
-        comments.map(({ comment, displayName }, index) => (
+      {content?.comments?.length &&
+        content?.comments.map(({ comment, user, _id }) => (
           <Comment
-            key={`${displayName}_${comment}_${index}`}
-            username={displayName}
+            key={_id}
+            username={user?.username}
             comment={comment}
+            userAvatar={user?.avatarSrc}
           />
         ))}
     </div>
   );
 };
 
-const Comment = ({ username, comment }) => {
+const Comment = ({ username, comment, userAvatar }) => {
   const { close } = useModal();
-  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`;
 
   return (
     <div className="flex text-14 my-4">
