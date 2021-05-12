@@ -1,19 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { FirebaseProvider } from "./context/firebase";
-import { UserProvider } from "./context/user";
+import { AuthProvider } from "./context/Auth";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 3600000,
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <FirebaseProvider>
-      <UserProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
         <App />
-      </UserProvider>
-    </FirebaseProvider>
+      </QueryClientProvider>
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
