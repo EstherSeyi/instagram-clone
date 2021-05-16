@@ -33,7 +33,7 @@ const SinglePost = ({ content }) => {
           <AddComment
             showForm={showForm}
             commentInput={commentInput}
-            photoId={content._id}
+            postId={content._id}
           />
         </div>
       </div>
