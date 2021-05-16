@@ -24,8 +24,8 @@ export default function Comments({ content, commentInput }) {
 
         {content.comments.slice(0, 2).map((item) => (
           <p key={`${item.comment}-${item.user.username}`}>
-            <Link to={`/p/${item.user.username}`} className="font-bold mr-1">
-              {item.user.username}
+            <Link to={`/p/${item?.user?.username}`} className="font-bold mr-1">
+              {item?.user?.username}
             </Link>
             <span>{item.comment}</span>
           </p>
@@ -34,7 +34,7 @@ export default function Comments({ content, commentInput }) {
           {formatDistance(new Date(content.createdAt), new Date())} ago
         </p>
       </div>
-      <AddComment photoId={content._id} commentInput={commentInput} />
+      <AddComment postId={content._id} commentInput={commentInput} />
     </>
   );
 }
