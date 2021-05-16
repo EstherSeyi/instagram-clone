@@ -1,24 +1,14 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 
-import { getSuggestedProfiles } from "../../services/firebase";
-
 import SuggestedProfile from "./suggested-profiles.jsx";
 
+import { useAuth } from "../../context/Auth";
+
 const Suggestions = ({ userId }) => {
+  const { state } = useAuth();
   const [profiles, setProfiles] = useState(null);
-
-  useEffect(() => {
-    async function suggestedProfiles() {
-      const response = await getSuggestedProfiles(userId);
-
-      setProfiles(response);
-    }
-    if (userId) {
-      suggestedProfiles();
-    }
-  }, [userId]);
 
   return (
     <>

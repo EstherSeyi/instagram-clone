@@ -4,7 +4,7 @@ import { useModal } from "../../context/modal";
 
 const Comments = ({ content }) => {
   return (
-    <div className="hidden md:block px-4 overflow-scroll flex-40 h-448">
+    <div className="hidden md:block px-4 overflow-scroll flex-40 h-90%">
       {content?.caption && (
         <Comment
           username={content?.user?.username}
