@@ -4,7 +4,7 @@ import { useQueryClient } from "react-query";
 import { useAppMutation } from "../../hooks/use-query-helpers";
 import { useAuth } from "../../context/Auth";
 
-export default function AddComment({ photoId, commentInput }) {
+export default function AddComment({ postId, commentInput }) {
   const { state } = useAuth();
 
   const queryClient = useQueryClient();
@@ -45,7 +45,7 @@ export default function AddComment({ photoId, commentInput }) {
     await mutate({
       user: state?.user?.id,
       comment: values.comment,
-      photoId: photoId,
+      postId: postId,
     });
   };
 

@@ -1,19 +1,16 @@
 import { useQueryClient } from "react-query";
 
-import { useAuth } from "../../context/Auth";
 import { useAppQuery, useAppMutation } from "../../hooks/use-query-helpers";
 
 const Header = ({ small, poster }) => {
-  const { state } = useAuth();
-
   const { data: isFollowing } = useAppQuery(`user-isfollowing_${poster?._id}`, {
-    url: `v1/user/following/${state?.user?.id}/${poster?._id}`,
+    url: `v1/user/following/${poster?._id}`,
   });
 
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useAppMutation(
     {
-      url: `v1/user/follow_unfollow/${state?.user?.id}`,
+      url: "v1/user/follow_unfollow",
       method: "patch",
     },
     {

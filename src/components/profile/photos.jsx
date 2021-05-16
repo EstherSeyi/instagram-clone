@@ -5,34 +5,34 @@ import Skeleton from "react-loading-skeleton";
 // future task: add onhover with the comments length & add the likes
 // future future task: add a lightbox where you can add comments!
 
-const Photos = ({ photos }) => {
+const Photos = (profileData) => {
   return (
     <div className="h-16 border-t border-gray mt-4 pt-4">
-      {!photos ? (
+      {!profileData?.posts ? (
         <Skeleton
           width={300}
           height={320}
-          count={photos.length ?? 9}
+          count={profileData?.posts?.length ?? 9}
           className="mr-4 mb-4 "
         />
-      ) : photos.length > 0 ? (
+      ) : profileData?.posts?.length > 0 ? (
         <div
           style={{
             gridTemplateColumns: "repeat(auto-fit, minmax(250px,1fr))",
           }}
           className="w-full grid gap-4  mx-auto"
         >
-          {photos.map((photo) => (
+          {profileData?.posts?.map((post) => (
             <img
-              key={photo.docId}
+              key={post._id}
               className="h-275 w-full"
-              src={`${process.env.PUBLIC_URL}/assets/${photo.imageSrc}`}
-              alt={photo.caption}
+              src={post?.imageSrc}
+              alt={post.caption}
             />
           ))}
         </div>
       ) : (
-        <p>No Photos Yet</p>
+        <p>No Posts Yet</p>
       )}
     </div>
   );

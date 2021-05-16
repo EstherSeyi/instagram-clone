@@ -10,7 +10,7 @@ import { useAuth } from "../../context/Auth";
 const Actions = ({ handleFocus, setShowForm, content }) => {
   const { state } = useAuth();
   const { data } = useAppQuery(`user-likes-post_${content._id}`, {
-    url: `v1/user/likes/${state?.user?.id}/${content?._id}`,
+    url: `v1/user/likes/${content?._id}`,
   });
   const [liked, setLiked] = useState(data?.payload);
   const [totalLikes, setTotalLikes] = useState(content?.likes?.length);
@@ -22,7 +22,7 @@ const Actions = ({ handleFocus, setShowForm, content }) => {
   const queryClient = useQueryClient();
   const { mutate } = useAppMutation(
     {
-      url: `v1/photo/like_unlike/${content?._id}`,
+      url: `v1/post/like_unlike/${content?._id}`,
       method: "patch",
     },
     {
