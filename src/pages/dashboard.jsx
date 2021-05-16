@@ -9,7 +9,7 @@ import { useModal } from "../context/modal";
 
 export default function Dashboard() {
   const { modalState } = useModal();
-  const { state, addUser } = useAuth();
+  const { state } = useAuth();
   useEffect(() => {
     document.title = "Instagram";
   }, []);
