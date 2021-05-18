@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children }) => {
 
   const location = useLocation();
 
-  return state.id ? (
+  return !state?.user?.id ? (
     <Redirect
       to={{
         pathname: "/login",
