@@ -18,6 +18,12 @@ const Header = ({ small, poster }) => {
         await queryClient.invalidateQueries(`user-isfollowing_${poster?._id}`, {
           refetchInactive: true,
         });
+        await queryClient.invalidateQueries(
+          `user-profile_${poster?.username}`,
+          {
+            refetchInactive: true,
+          }
+        );
       },
     }
   );
