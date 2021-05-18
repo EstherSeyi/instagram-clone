@@ -1,49 +1,86 @@
-import { useState } from "react";
+import { useQueryClient } from "react-query";
 import { Link } from "react-router-dom";
 
-import {
-  getUserByUserId,
-  updateUserFollowing,
-  updateFollowedUserFollowers,
-} from "../../services/firebase";
+import { useAppMutation, useAppQuery } from "../../hooks/use-query-helpers";
+import { useAuth } from "../../context/Auth";
 
-const SuggestedProfile = ({ userDocId, username, profileId, userId }) => {
-  const [followed, setFollowed] = useState(false);
+const SuggestedProfile = ({ profile, userId }) => {
+  const { state } = useAuth();
+  const { data: isFollowing } = useAppQuery(
+    `user-isfollowing_${profile?._id}`,
+    {
+      url: `v1/user/following/${profile?._id}`,
+    }
+  );
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useAppMutation(
+    {
+      url: "v1/user/follow_unfollow",
+      method: "patch",
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          `user-isfollowing_${profile?._id}`,
+          {
+            refetchInactive: true,
+          }
+        );
+        await queryClient.invalidateQueries(
+          `user-profile_${profile?.username}`,
+          {
+            refetchInactive: true,
+          }
+        );
+        await queryClient.invalidateQueries(
+          `user-profile_${state?.user?.username}`,
+          {
+            refetchInactive: true,
+          }
+        );
+        await queryClient.invalidateQueries(`user-data_${userId}`, {
+          refetchInactive: true,
+        });
+      },
+    }
+  );
+
   const handleFollowUser = async () => {
-    setFollowed(true);
-    const [{ docId }] = await getUserByUserId(userId);
-    await updateUserFollowing(docId, profileId);
-    await updateFollowedUserFollowers(userDocId, userId);
+    await mutate({
+      id: profile?._id,
+      action: isFollowing?.payload ? "unfollow" : "follow",
+    });
   };
-
-  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${username}.jpg`;
 
   return (
     <>
-      {!followed ? (
-        <div className="flex justify-between text-12 mb-2">
+      {!isFollowing?.payload ? (
+        <div className="flex justify-between text-12 mb-2 w-full">
           <div className="flex">
             <img
               className="mr-4 rounded-full w-8 h-8"
-              src={userAvatar}
+              src={profile?.avatarSrc}
               onError={(e) => {
                 e.target.onError = null;
                 e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
               }}
-              alt={`Follow ${username}`}
+              alt={`Follow ${profile?.username}`}
             />
             <div>
-              <Link to={`/p/${username}`}>
-                <p className="font-bold">{username}</p>
+              <Link to={`/p/${profile?.username}`}>
+                <p className="font-bold">{profile?.username}</p>
               </Link>
               <p className="text-quickSilver3 ">Suggested for you.</p>
             </div>
           </div>
           <button
             onClick={handleFollowUser}
-            className="text-azureRadiance font-bold focus:outline-none hover:opacity-30"
+            className={`text-azureRadiance font-bold focus:outline-none hover:opacity-30 ${
+              isLoading ? "opacity-30 cursor-not-allowed" : ""
+            }`}
+            disabled={isLoading}
           >
-            Follow
+            {isLoading ? "Loading..." : "Follow"}
           </button>
         </div>
       ) : null}
