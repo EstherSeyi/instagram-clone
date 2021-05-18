@@ -2,8 +2,8 @@ import { Link, useHistory } from "react-router-dom";
 import { useState } from "react";
 
 import { DASHBOARD, LOGIN, SIGN_UP, PROFILE } from "../constants/routes";
-import { useAuth } from "../context/user";
-import useUser from "../hooks/useUser";
+import { useAuth } from "../context/Auth";
+import { useAppQuery } from "../hooks/use-query-helpers";
 
 import logo from "../images/logo.png";
 
@@ -14,17 +14,30 @@ import Chat from "./icons/chat";
 import Home from "./icons/home";
 
 export default function Header() {
-  const { auth } = useAuth();
+  const { state, addUser } = useAuth();
+
+  useAppQuery(
+    `user-data_${state?.user?.id}`,
+    {
+      url: `v1/user/${state?.user?.id}`,
+    },
+    {
+      enabled: state.isLoggedIn,
+      onSuccess: (data) => {
+        addUser({ ...data?.payload, id: data?.payload?._id });
+      },
+    }
+  );
 
   return (
-    <header className="py-3 border-b border-mecury2 bg-white mb-8">
+    <header className="py-3 border-b border-mecury2 bg-white mb-8 fixed w-full top-0 left-0">
       <div className="w-10/12 max-w-screen-lg mx-auto flex justify-between">
         <Link to={DASHBOARD} className="block focus:outline-none">
           <h1 className="w-40 ">
             <img src={logo} alt="Instagram" className="h-30" />
           </h1>
         </Link>
-        {auth.isLoggedIn ? (
+        {state?.isLoggedIn ? (
           <Avatar />
         ) : (
           <div>
@@ -49,8 +62,7 @@ export default function Header() {
 
 const Avatar = () => {
   const history = useHistory();
-  const { logout } = useAuth();
-  const { user } = useUser();
+  const { logout, state } = useAuth();
   const [clicked, setClicked] = useState(false);
   const handleClick = () => {
     setClicked((prevState) => !prevState);
@@ -59,8 +71,6 @@ const Avatar = () => {
   const handleLogout = async () => {
     await logout(history);
   };
-
-  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${user?.username}.jpg`;
 
   return (
     <>
@@ -74,12 +84,15 @@ const Avatar = () => {
         <div className="relative">
           <img
             onClick={handleClick}
-            src={userAvatar}
+            src={
+              state?.user?.avatarSrc ??
+              `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`
+            }
             onError={(e) => {
               e.target.onError = null;
               e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
             }}
-            alt={`${user.username} avatar`}
+            alt={`${state?.user.username} avatar`}
             className={`block rounded-full h-8 w-8 cursor-pointer ${
               clicked ? "border border-dark" : ""
             }  p-0.5`}
@@ -91,7 +104,8 @@ const Avatar = () => {
           >
             <ul className="p-2.5 ">
               <li className="py-1">
-                <Profile /> <Link to={`/p/${user.username}`}>Profile</Link>
+                <Profile />{" "}
+                <Link to={`/p/${state?.user?.username}`}>Profile</Link>
               </li>
               <li className="py-1">
                 <Bookmark />

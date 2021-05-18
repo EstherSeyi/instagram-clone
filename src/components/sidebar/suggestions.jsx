@@ -1,45 +1,39 @@
-import { memo, useState, useEffect } from "react";
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 
-import { getSuggestedProfiles } from "../../services/firebase";
-
 import SuggestedProfile from "./suggested-profiles.jsx";
 
-const Suggestions = ({ userId }) => {
-  const [profiles, setProfiles] = useState(null);
+import { useAuth } from "../../context/Auth";
+import { useAppQuery } from "../../hooks/use-query-helpers.jsx";
 
-  useEffect(() => {
-    async function suggestedProfiles() {
-      const response = await getSuggestedProfiles(userId);
+const Suggestions = () => {
+  const { state } = useAuth();
 
-      setProfiles(response);
-    }
-    if (userId) {
-      suggestedProfiles();
-    }
-  }, [userId]);
+  const { data } = useAppQuery(`user-suggestions_${state?.user?.id}`, {
+    url: "v1/user/suggestions",
+  });
 
   return (
     <>
-      {!profiles ? (
+      {!data?.payload ? (
         <Skeleton count={1} height={150} className="mt-5" />
-      ) : profiles?.length ? (
+      ) : data?.payload?.length ? (
         <>
           <div className="flex justify-between text-14 mb-4 text-quickSilver3 font-bold">
             <p>Suggested for you</p>
-            <Link className="block" to="/">
-              See All
-            </Link>
+            {data?.payload?.length < 5 ? null : (
+              <Link className="block" to="/">
+                See All
+              </Link>
+            )}
           </div>
 
-          {profiles.map((profile) => (
+          {data?.payload?.map((profile) => (
             <SuggestedProfile
-              key={profile.docId}
-              userDocId={profile.docId}
-              username={profile.username}
-              profileId={profile.userId}
-              userId={userId}
+              key={profile._id}
+              profile={profile}
+              userId={state?.user?.id}
             />
           ))}
         </>

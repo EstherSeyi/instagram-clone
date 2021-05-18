@@ -1,34 +1,38 @@
-import { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useEffect } from "react";
+import { Redirect } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Header from "../components/header";
-
 import UserProfile from "../components/profile";
-import { getUserByUsername } from "../services/firebase";
 import * as ROUTES from "../constants/routes";
+
+import { useAppQuery } from "../hooks/use-query-helpers";
 
 export default function Profile() {
   const { username } = useParams();
-  const [userExists, setUserExists] = useState(undefined);
-  const history = useHistory();
+  const { data: profileData, isLoading } = useAppQuery(
+    `user-profile_${username}`,
+    {
+      url: `v1/user/${username}/data`,
+    }
+  );
 
   useEffect(() => {
-    async function checkUserExistsToLoadProfile() {
-      const doesUserExist = await getUserByUsername(username);
-      if (!doesUserExist) {
-        history.push(ROUTES.NOT_FOUND);
-      } else {
-        setUserExists(true);
-      }
-    }
+    document.title = `${username} - Instagram`;
+  }, [username]);
 
-    checkUserExistsToLoadProfile();
-  }, [username, history]);
-
-  return userExists ? (
+  return isLoading ? (
+    <p>Loading...</p>
+  ) : profileData?.payload ? (
     <>
       <Header />
-      <UserProfile username={username} />
+      <UserProfile username={username} profileData={profileData?.payload} />
     </>
-  ) : null;
+  ) : (
+    <Redirect
+      to={{
+        pathname: ROUTES.NOT_FOUND,
+      }}
+    />
+  );
 }

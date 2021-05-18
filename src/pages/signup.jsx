@@ -5,16 +5,16 @@ import Button from "../components/button";
 import Input from "../components/input";
 
 import { LOGIN } from "../constants/routes";
-import { useAuth } from "../context/user";
+import { useAuth } from "../context/Auth";
 
 import logo from "../images/logo.png";
 
 export default function SignUp() {
   const history = useHistory();
-  const { register, auth, clearError } = useAuth();
+  const { register, clearError, state: registerState } = useAuth();
   const [state, setState] = useState({
     username: "",
-    fullname: "",
+    fullName: "",
     email: "",
     password: "",
     error: "",
@@ -54,12 +54,13 @@ export default function SignUp() {
   const isValid =
     state.email !== "" &&
     state.password !== "" &&
-    state.fullname !== "" &&
+    state.fullName !== "" &&
     state.username !== "";
 
   const handleSignup = async (event) => {
     event.preventDefault();
-    await register(state, history);
+    const { error, ...rest } = state;
+    await register({ ...rest }, history);
   };
 
   return (
@@ -85,10 +86,10 @@ export default function SignUp() {
             <Input
               placeholder="Full name"
               ariaLabel="Enter your full name"
-              name="fullname"
+              name="fullName"
               type="text"
               onChange={handleChange}
-              value={state.fullname}
+              value={state.fullName}
             />
             <Input
               placeholder="Email address"
@@ -107,7 +108,7 @@ export default function SignUp() {
               value={state.password}
             />
 
-            <Button isValid={isValid} loading={auth.isLoading}>
+            <Button isValid={isValid} loading={registerState.isLoading}>
               Sign Up
             </Button>
           </form>
@@ -116,9 +117,9 @@ export default function SignUp() {
             <p className="text-10 my-2 text-red text-center px-4">
               {state.error}
             </p>
-          ) : auth.error ? (
+          ) : registerState.error ? (
             <p className="text-10 my-2 text-red text-center px-4">
-              {auth.error}
+              {registerState.error}
             </p>
           ) : null}
         </div>

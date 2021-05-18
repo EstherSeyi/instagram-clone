@@ -7,7 +7,6 @@ import Loading from "../components/loading";
 
 import PrivateRoutes from "../helpers/protectedRoutes";
 import { ModalProvider } from "../context/modal";
-import { ActionProvider } from "../context/actions";
 
 import Modal from "../components/modal";
 
@@ -21,22 +20,20 @@ const Routes = () => {
   return (
     <Router>
       <Suspense fallback={<Loading />}>
-        <ActionProvider>
-          <ModalProvider>
-            <Modal />
-            <Switch>
-              <Route path={ROUTES.LOGIN} component={Login} />
-              <Route path={ROUTES.SIGN_UP} component={SignUp} />
-              <Route path={ROUTES.PROFILE} component={Profile} />
+        <ModalProvider>
+          <Modal />
+          <Switch>
+            <Route path={ROUTES.LOGIN} component={Login} />
+            <Route path={ROUTES.SIGN_UP} component={SignUp} />
+            <Route path={ROUTES.PROFILE} component={Profile} />
 
-              <PrivateRoutes path={ROUTES.DASHBOARD} exact={true}>
-                <Dashboard />
-              </PrivateRoutes>
+            <PrivateRoutes path={ROUTES.DASHBOARD} exact={true}>
+              <Dashboard />
+            </PrivateRoutes>
 
-              <Route component={NotFound} />
-            </Switch>
-          </ModalProvider>
-        </ActionProvider>
+            <Route component={NotFound} />
+          </Switch>
+        </ModalProvider>
       </Suspense>
     </Router>
   );

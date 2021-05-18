@@ -1,42 +1,52 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "react-query";
 
 import Heart from "../icons/heart";
 import Chat from "../icons/chat";
 
-import { useAction } from "../../context/actions";
-import { useFirebase } from "../../context/firebase";
-import { useAuth } from "../../context/user";
+import { useAppMutation, useAppQuery } from "../../hooks/use-query-helpers";
+import { useAuth } from "../../context/Auth";
 
-const Actions = ({ handleFocus, setShowForm, likeDetails }) => {
-  const { state, setToggleLiked, setLikes } = useAction();
-  const { firebase, FieldValue } = useFirebase();
-
-  const { totalLikes, likedPhoto, docId } = likeDetails;
-
-  const { noOfLikes, toggleLiked } = state;
+const Actions = ({ handleFocus, setShowForm, content }) => {
+  const { state } = useAuth();
+  const { data } = useAppQuery(`user-likes-post_${content._id}`, {
+    url: `v1/user/likes/${content?._id}`,
+  });
+  const [liked, setLiked] = useState(data?.payload);
+  const [totalLikes, setTotalLikes] = useState(content?.likes?.length);
 
   useEffect(() => {
-    setToggleLiked(likedPhoto);
-    setLikes(totalLikes);
-    // eslint-disable-next-line
-  }, [likedPhoto, totalLikes]);
+    setLiked(data?.payload);
+  }, [data?.payload]);
 
-  const { auth } = useAuth();
-
-  const userId = auth?.user?.uid ?? "";
-
+  const queryClient = useQueryClient();
+  const { mutate } = useAppMutation(
+    {
+      url: `v1/post/like_unlike/${content?._id}`,
+      method: "patch",
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(`user-likes-post_${content._id}`, {
+          refetchInactive: true,
+        });
+        await queryClient.invalidateQueries(
+          `users-timeline_${state?.user?.id}`,
+          {
+            refetchInactive: true,
+          }
+        );
+      },
+    }
+  );
   const handleToggleLiked = async () => {
-    setToggleLiked(!toggleLiked);
-    await firebase
-      .firestore()
-      .collection("photos")
-      .doc(docId)
-      .update({
-        likes: toggleLiked
-          ? FieldValue.arrayRemove(userId)
-          : FieldValue.arrayUnion(userId),
-      });
-    setLikes(!toggleLiked ? noOfLikes + 1 : noOfLikes - 1);
+    setLiked((prevState) => !prevState);
+    setTotalLikes((prevState) => (liked ? prevState - 1 : prevState + 1));
+
+    await mutate({
+      id: state?.user?.id,
+      action: liked ? "unlike" : "like",
+    });
   };
 
   return (
@@ -44,7 +54,7 @@ const Actions = ({ handleFocus, setShowForm, likeDetails }) => {
       <div className="flex mt-2">
         <Heart
           handleToggleLiked={handleToggleLiked}
-          toggleLiked={toggleLiked}
+          toggleLiked={liked}
           cssClasses="ml-0 md:ml-4"
         />
         <Chat
@@ -57,7 +67,7 @@ const Actions = ({ handleFocus, setShowForm, likeDetails }) => {
       </div>
       <div className="pl-0 md:p-4 md:py-0">
         <p>
-          Liked by <span className="font-bold">{noOfLikes}</span>
+          Liked by <span className="font-bold">{totalLikes}</span>
         </p>
       </div>
     </div>

@@ -9,6 +9,12 @@ export const setLoggedIn = (payload) => ({
     user: payload,
   },
 });
+export const setUser = (payload) => ({
+  type: "SET_USER",
+  payload: {
+    user: payload,
+  },
+});
 
 export const setAuthError = (payload) => ({
   type: "SET_AUTH_ERROR",

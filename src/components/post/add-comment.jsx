@@ -1,15 +1,36 @@
 import { useState } from "react";
+import { useQueryClient } from "react-query";
 
-import { useFirebase } from "../../context/firebase";
-import useUser from "../../hooks/useUser";
+import { useAppMutation } from "../../hooks/use-query-helpers";
+import { useAuth } from "../../context/Auth";
 
-export default function AddComment({ docId, setComments, commentInput }) {
+export default function AddComment({ postId, commentInput }) {
+  const { state } = useAuth();
+
+  const queryClient = useQueryClient();
+  const { mutate, isLoading: loading } = useAppMutation(
+    {
+      url: "v1/comment",
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          `users-timeline_${state?.user?.id}`,
+          {
+            refetchInactive: true,
+          }
+        );
+        setValues((prevState) => ({
+          ...prevState,
+          comment: "",
+        }));
+      },
+    }
+  );
+
   const [values, setValues] = useState({
     comment: "",
-    loading: false,
   });
-  const { firebase, FieldValue } = useFirebase();
-  const { user } = useUser();
 
   const handleChange = ({ target }) => {
     setValues((prevState) => ({
@@ -20,37 +41,12 @@ export default function AddComment({ docId, setComments, commentInput }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      setValues((prevState) => ({
-        ...prevState,
-        loading: true,
-      }));
-      await firebase
-        .firestore()
-        .collection("photos")
-        .doc(docId)
-        .update({
-          comments: FieldValue.arrayUnion({
-            displayName: user.username,
-            comment: values.comment,
-          }),
-        });
-      setComments((prevState) => [
-        { displayName: user.username, comment: values.comment },
-        ...prevState,
-      ]);
-      setValues((prevState) => ({
-        ...prevState,
-        comment: "",
-        loading: false,
-      }));
-    } catch (error) {
-      setValues((prevState) => ({
-        ...prevState,
-        comment: "",
-        loading: false,
-      }));
-    }
+
+    await mutate({
+      user: state?.user?.id,
+      comment: values.comment,
+      postId: postId,
+    });
   };
 
   const isValid = values?.comment && values.comment?.length > 3;
@@ -75,14 +71,14 @@ export default function AddComment({ docId, setComments, commentInput }) {
         />
         <button
           className={`block w-2/12 text-14 text-azureRadiance ${
-            values.loading ? "" : "font-bold"
+            loading ? "" : "font-bold"
           } focus:outline-none ${
-            !isValid || values.loading ? "opacity-30 cursor-not-allowed" : ""
+            !isValid || loading ? "opacity-30 cursor-not-allowed" : ""
           }`}
-          disabled={!isValid || values.loading}
+          disabled={!isValid || loading}
           type="submit"
         >
-          {values.loading ? "Loading..." : " Post"}
+          {loading ? "Loading..." : " Post"}
         </button>
       </form>
     </div>

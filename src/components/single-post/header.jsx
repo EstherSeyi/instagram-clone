@@ -1,44 +1,39 @@
-import { useState, useEffect } from "react";
+import { useQueryClient } from "react-query";
 
-import useUser from "../../hooks/useUser";
-import {
-  toggleFollow,
-  isUserFollowingProfile,
-  getUserByUserId,
-} from "../../services/firebase";
+import { useAppQuery, useAppMutation } from "../../hooks/use-query-helpers";
 
 const Header = ({ small, poster }) => {
-  const { user } = useUser();
-  const [isFollowingProfile, setIsFollowingProfile] = useState(false);
-  useEffect(() => {
-    const isLoggedInUserFollowingProfile = async () => {
-      const isFollowing = await isUserFollowingProfile(
-        user.username,
-        poster.id
-      );
-      setIsFollowingProfile(isFollowing);
-    };
+  const { data: isFollowing } = useAppQuery(`user-isfollowing_${poster?._id}`, {
+    url: `v1/user/following/${poster?._id}`,
+  });
 
-    if (user.username && poster.id) {
-      isLoggedInUserFollowingProfile();
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useAppMutation(
+    {
+      url: "v1/user/follow_unfollow",
+      method: "patch",
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(`user-isfollowing_${poster?._id}`, {
+          refetchInactive: true,
+        });
+        await queryClient.invalidateQueries(
+          `user-profile_${poster?.username}`,
+          {
+            refetchInactive: true,
+          }
+        );
+      },
     }
-  }, [user.username, poster.id]);
+  );
 
   const handleToggleFollow = async () => {
-    setIsFollowingProfile((prevState) => !prevState);
-
-    const [posterData] = await getUserByUserId(poster.id);
-
-    await toggleFollow(
-      isFollowingProfile,
-      user.docId,
-      posterData.docId,
-      poster.id,
-      user.userId
-    );
+    await mutate({
+      id: poster?._id,
+      action: isFollowing?.payload ? "unfollow" : "follow",
+    });
   };
-
-  const userAvatar = `${process.env.PUBLIC_URL}/assets/images/avatars/${user?.username}.jpg`;
 
   return (
     <div
@@ -49,7 +44,7 @@ const Header = ({ small, poster }) => {
       } text-14  font-bold md:border-b border-mecury2 pb-3 items-center`}
     >
       <img
-        src={userAvatar}
+        src={poster.avatarSrc}
         onError={(e) => {
           e.target.onError = null;
           e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
@@ -58,15 +53,18 @@ const Header = ({ small, poster }) => {
         className="h-8 w-8 rounded-full mr-4"
       />
       <p className="mr-4">{poster.username}</p>
-      {isFollowingProfile ? (
+      {isFollowing?.payload ? (
         <p className="ml-auto">Following</p>
       ) : (
         <button
-          className="ml-auto focus:outline-none font-bold text-azureRadiance"
+          className={`ml-auto focus:outline-none font-bold text-azureRadiance ${
+            isLoading ? "opacity-30 cursor-not-allowed" : ""
+          }`}
           type="button"
           onClick={handleToggleFollow}
+          disabled={isLoading}
         >
-          Follow
+          {isLoading ? "Loading..." : "Follow"}
         </button>
       )}
     </div>

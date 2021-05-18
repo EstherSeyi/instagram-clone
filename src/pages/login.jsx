@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import { SIGN_UP } from "../constants/routes";
-import { useAuth } from "../context/user";
+import { useAuth } from "../context/Auth";
 
 import Input from "../components/input";
 import Button from "../components/button";
@@ -12,9 +12,9 @@ import logo from "../images/logo.png";
 
 export default function Login() {
   const history = useHistory();
-  const { auth, login, clearError } = useAuth();
+  const { state: auth, login, clearError } = useAuth();
   const [state, setState] = useState({
-    email: "",
+    username: "",
     password: "",
     error: "",
   });
@@ -41,14 +41,14 @@ export default function Login() {
     event.preventDefault();
     await login(
       {
-        email: state.email,
         password: state.password,
+        username: state.username,
       },
       history
     );
   };
 
-  const isValid = state.email !== "" && state.password !== "";
+  const isValid = state.password !== "" && state.username !== "";
 
   return (
     <section className="container flex justify-center items-center mx-auto h-screen ">
@@ -71,12 +71,12 @@ export default function Login() {
             onSubmit={handleSubmit}
           >
             <Input
-              placeholder="Email address"
-              ariaLabel="Enter your email address"
-              name="email"
+              placeholder="Username"
+              ariaLabel="Enter your username"
+              name="username"
               type="text"
               onChange={handleChange}
-              value={state.email}
+              value={state.username}
             />
             <Input
               ariaLabel="Enter your password"

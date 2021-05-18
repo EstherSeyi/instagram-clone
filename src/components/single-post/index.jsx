@@ -5,36 +5,35 @@ import Comments from "./comments";
 import Actions from "./actions";
 import AddComment from "./add-comment";
 
-const SinglePost = ({ comments: allComments, poster, likeDetails }) => {
+const SinglePost = ({ content }) => {
   const [showForm, setShowForm] = useState(false);
-  const [comments, setComments] = useState(allComments);
+
   const commentInput = useRef(null);
   const handleFocus = () => commentInput.current.focus();
 
   return (
     <div className="bg-white flex flex-col md:flex-row md:h-60vh">
-      <Header small poster={poster} />
+      <Header small poster={content.user} />
       <div className="flex-60">
         <img
           className="w-2/3 mx-auto md:m-0 md:w-full h-full"
-          src={`${process.env.PUBLIC_URL}/assets${poster.image}`}
-          alt="post"
+          src={content.imageSrc}
+          alt={`${content.caption}`}
         />
       </div>
       <div className="flex-40 py-4 relative ">
-        <Header poster={poster} />
-        <Comments comments={comments} poster={poster} />
+        <Header poster={content.user} />
+        <Comments content={content} />
         <div className="bg-white md:border-t md:border-mecury2 md:absolute right-0 left-0 bottom-0">
           <Actions
             setShowForm={setShowForm}
             handleFocus={handleFocus}
-            likeDetails={likeDetails}
+            content={content}
           />
           <AddComment
             showForm={showForm}
             commentInput={commentInput}
-            docId={likeDetails.docId}
-            setComments={setComments}
+            postId={content._id}
           />
         </div>
       </div>
