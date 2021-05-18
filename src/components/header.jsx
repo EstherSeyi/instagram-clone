@@ -84,7 +84,10 @@ const Avatar = () => {
         <div className="relative">
           <img
             onClick={handleClick}
-            src={state.user.avatarSrc}
+            src={
+              state?.user?.avatarSrc ??
+              `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`
+            }
             onError={(e) => {
               e.target.onError = null;
               e.target.src = `${process.env.PUBLIC_URL}/assets/images/avatars/dummy.png`;
