@@ -1,19 +1,53 @@
-import { useState } from "react";
+import { useQueryClient } from "react-query";
 
 import { useAuth } from "../../context/Auth";
+import { useAppQuery, useAppMutation } from "../../hooks/use-query-helpers";
 
-const Header = ({ profileData }) => {
+const Header = ({ profileData, posts }) => {
   const { state } = useAuth();
 
-  console.log(profileData);
+  const { data: isFollowing } = useAppQuery(
+    `user-isfollowing_${profileData._id}`,
+    {
+      url: `v1/user/following/${profileData._id}`,
+    }
+  );
 
-  const [isFollowingProfile, setIsFollowingProfile] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useAppMutation(
+    {
+      url: "v1/user/follow_unfollow",
+      method: "patch",
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          `user-isfollowing_${profileData._id}`,
+          {
+            refetchInactive: true,
+          }
+        );
+        await queryClient.invalidateQueries(
+          `user-profile_${profileData?.username}`,
+          {
+            refetchInactive: true,
+          }
+        );
+        await queryClient.invalidateQueries(`user-data_${state?.user?.id}`, {
+          refetchInactive: true,
+        });
+      },
+    }
+  );
 
   const activeBtnFollowState =
     state?.user?.username && state?.user?.username !== profileData?.username;
 
   const handleToggleFollow = async () => {
-    setIsFollowingProfile((prevState) => !prevState);
+    await mutate({
+      id: profileData?._id,
+      action: isFollowing?.payload ? "unfollow" : "follow",
+    });
   };
 
   return (
@@ -47,7 +81,7 @@ const Header = ({ profileData }) => {
               </p>
               {state?.user?.username === profileData?.username && (
                 <button
-                  className="block bg-azureRadiance text-white rounded-sm text-14 py-1 px-6 font-bold focus:outline-none"
+                  className="block bg-azureRadiance text-white rounded-sm text-14 py-1 px-4 font-bold focus:outline-none"
                   // onClick={handleToggleFollow}
                 >
                   Edit Profile
@@ -55,18 +89,21 @@ const Header = ({ profileData }) => {
               )}
               {activeBtnFollowState && (
                 <button
-                  className="block bg-azureRadiance text-white rounded-sm text-14 py-1 px-6 font-bold focus:outline-none"
+                  className={`w-20 sm:block px-0 bg-azureRadiance text-white rounded-sm text-14 py-1 font-bold focus:outline-none
+                  ${isLoading ? "opacity-30 cursor-not-allowed" : ""}
+                  
+                  `}
                   onClick={handleToggleFollow}
+                  disabled={isLoading}
                 >
-                  {isFollowingProfile ? "Unfollow" : "Follow"}
+                  {isFollowing?.payload ? "Unfollow" : "Follow"}
                 </button>
               )}
             </div>
           </div>
           <div className="hidden sm:flex w-6/12 justify-between mb-5">
             <p>
-              <span className="font-bold">{profileData?.posts?.length}</span>{" "}
-              posts
+              <span className="font-bold">{posts?.length}</span> posts
             </p>
             <p>
               <span className="font-bold">
@@ -90,8 +127,8 @@ const Header = ({ profileData }) => {
       </div>
       <div className="flex pt-4 border-t border-gray justify-between sm:hidden">
         <p className="flex flex-col items-center">
-          <span className="font-bold">{profileData?.posts?.length}</span>
-          <span>posts</span>
+          <span className="font-bold">{posts?.length}</span>
+          <span>post{`${posts?.length > 1 ? "s" : ""}`}</span>
         </p>
         <p className="flex flex-col items-center">
           <span className="font-bold">{profileData?.followers?.length}</span>
