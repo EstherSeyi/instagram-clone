@@ -27,12 +27,12 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "npm run watch:css && react-scripts start",
-    "build": "npm run build:css && react-scripts build",
+    "start": "yarn install && yarn build:css && BROWSER=none react-scripts start",
+    "build": "rm -rf dist && yarn install && yarn build:css && react-scripts build && mv build dist",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build:css": "tailwind build src/styles/tailwind.css -o src/styles/app.css",
-    "watch:css": "tailwind build src/styles/tailwind.css -o src/styles/app.css -w"
+    "build:css": "tailwind build src/styles/tailwind.css -o public/assets/styles/index.css",
+    "watch:css": "tailwind build src/styles/tailwind.css -o public/assets/styles/index.css -w"
   },
   "eslintConfig": {
     "extends": [
